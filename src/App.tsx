@@ -1,5 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { User } from '@supabase/supabase-js';
 import Auth from './Auth';
+import WorkerDashboard from './WorkerDashboard';
+import { supabase } from './lib/supabase';
 import {
   ArrowRight,
   BadgeCheck,
@@ -51,6 +54,79 @@ const benefits = [
 
 function App() {
   const [showAuth, setShowAuth] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [sessionLoading, setSessionLoading] = useState(true);
+
+  useEffect(() => {
+    if (!supabase) {
+      setSessionLoading(false);
+      return;
+    }
+
+    let active = true;
+
+    supabase.auth.getSession().then(({ data, error }) => {
+      if (!active) return;
+
+      if (error) {
+        console.error('Could not restore session:', error.message);
+      }
+
+      setUser(data.session?.user ?? null);
+      setSessionLoading(false);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      setSessionLoading(false);
+    });
+
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  async function handleSignOut() {
+    if (!supabase) return;
+
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      throw error;
+    }
+
+    setUser(null);
+    setShowAuth(false);
+  }
+
+  if (sessionLoading) {
+    return (
+      <div
+        style={{
+          minHeight: '100vh',
+          display: 'grid',
+          placeItems: 'center',
+          background: '#f8fafc',
+          color: '#2563eb',
+          fontFamily: 'sans-serif',
+        }}
+      >
+        Loading EarnBridge...
+      </div>
+    );
+  }
+
+  if (user) {
+    return (
+      <WorkerDashboard
+        user={user}
+        onSignOut={handleSignOut}
+      />
+    );
+  }
 
   return (
     <div className="page-shell">
