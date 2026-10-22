@@ -6,7 +6,7 @@ import {
   Compass,
   HandCoins,
   HeartHandshake,
-  BadgeCheck,
+  ShieldCheck,
   Sparkles,
   Target,
   TrendingUp,
