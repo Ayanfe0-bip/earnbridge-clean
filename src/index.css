@@ -1202,3 +1202,221 @@ p { margin-top: 0; }
     transition: none !important;
   }
                              }
+/* EarnBridge authentication modal */
+.auth-overlay {
+position: fixed;
+inset: 0;
+z-index: 1000;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 18px;
+overflow-y: auto;
+background: rgba(8, 24, 19, 0.75);
+backdrop-filter: blur(8px);
+}
+
+.auth-panel {
+width: min(100%, 440px);
+max-height: calc(100vh - 36px);
+overflow-y: auto;
+box-sizing: border-box;
+padding: 30px;
+border: 1px solid #e5eee8;
+border-radius: 24px;
+background: #fff;
+color: #172b23;
+box-shadow: 0 28px 90px rgba(0, 0, 0, 0.25);
+animation: auth-panel-in 180ms ease-out;
+}
+
+@keyframes auth-panel-in {
+from { opacity: 0; transform: translateY(10px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.auth-back {
+display: inline-flex;
+align-items: center;
+gap: 8px;
+margin: 0 0 25px;
+padding: 8px 0;
+border: 0;
+background: transparent;
+color: #53665d;
+font: inherit;
+font-size: 13px;
+cursor: pointer;
+}
+
+.auth-back:hover { color: #137653; }
+
+.auth-brand-mark {
+display: grid;
+width: 54px;
+height: 54px;
+place-items: center;
+margin-bottom: 20px;
+border-radius: 17px;
+background: #e6f5ed;
+color: #137653;
+}
+
+.auth-eyebrow {
+margin: 0 0 9px;
+color: #16805a;
+font-size: 10px;
+font-weight: 800;
+letter-spacing: 0.13em;
+line-height: 1.6;
+}
+
+.auth-panel h2 {
+margin: 0 0 10px;
+color: #152b22;
+font-size: clamp(25px, 6vw, 32px);
+font-weight: 800;
+letter-spacing: -0.04em;
+line-height: 1.2;
+}
+
+.auth-subtitle {
+margin: 0 0 23px;
+color: #69786f;
+font-size: 14px;
+line-height: 1.7;
+}
+
+.auth-form { display: grid; gap: 16px; }
+
+.auth-form label {
+display: grid;
+gap: 8px;
+color: #263d32;
+font-size: 12px;
+font-weight: 700;
+}
+
+.auth-form input {
+box-sizing: border-box;
+width: 100%;
+min-height: 49px;
+padding: 0 14px;
+border: 1px solid #dce6df;
+border-radius: 12px;
+outline: none;
+background: #fbfdfb;
+color: #172b23;
+font: inherit;
+font-size: 14px;
+}
+
+.auth-form input:focus {
+border-color: #19845e;
+box-shadow: 0 0 0 3px rgba(25, 132, 94, 0.12);
+}
+
+.auth-submit {
+display: flex;
+min-height: 50px;
+align-items: center;
+justify-content: center;
+gap: 9px;
+margin-top: 4px;
+padding: 12px 18px;
+border: 0;
+border-radius: 12px;
+background: #137653;
+color: #fff;
+font: inherit;
+font-size: 14px;
+font-weight: 800;
+cursor: pointer;
+box-shadow: 0 8px 18px rgba(19, 118, 83, 0.18);
+}
+
+.auth-submit:hover:not(:disabled) { background: #0e6244; }
+.auth-submit:disabled { cursor: not-allowed; opacity: 0.65; }
+.auth-spinner { animation: auth-spin 1s linear infinite; }
+@keyframes auth-spin { to { transform: rotate(360deg); } }
+
+.auth-switch {
+margin: 20px 0 0;
+color: #69786f;
+text-align: center;
+font-size: 12px;
+line-height: 1.8;
+}
+
+.auth-switch button {
+padding: 2px 4px;
+border: 0;
+background: transparent;
+color: #137653;
+font: inherit;
+font-weight: 800;
+cursor: pointer;
+}
+
+.auth-alert {
+margin: 0 0 16px;
+padding: 12px 13px;
+border: 1px solid transparent;
+border-radius: 11px;
+font-size: 12px;
+line-height: 1.6;
+overflow-wrap: anywhere;
+}
+
+.auth-error {
+border-color: #f3d1d1;
+background: #fff4f3;
+color: #a52d2d;
+}
+
+.auth-success {
+border-color: #cbe8d7;
+background: #effaf3;
+color: #176640;
+}
+
+.auth-safety {
+display: flex;
+align-items: flex-start;
+justify-content: center;
+gap: 7px;
+margin-top: 22px;
+padding-top: 17px;
+border-top: 1px solid #edf1ed;
+color: #748078;
+font-size: 11px;
+line-height: 1.6;
+text-align: center;
+}
+
+.auth-safety svg { flex-shrink: 0; color: #16805a; }
+
+@media (max-width: 480px) {
+.auth-overlay { padding: 12px; }
+.auth-panel {
+width: 100%;
+max-height: calc(100vh - 24px);
+margin: auto 0;
+padding: 23px 20px;
+border-radius: 20px;
+}
+.auth-back { margin-bottom: 19px; }
+.auth-brand-mark {
+width: 48px;
+height: 48px;
+margin-bottom: 16px;
+}
+.auth-subtitle { margin-bottom: 19px; font-size: 13px; }
+.auth-form { gap: 13px; }
+.auth-form input { min-height: 47px; font-size: 16px; }
+.auth-submit { min-height: 49px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+.auth-panel, .auth-spinner { animation: none !important; }
+  }
