@@ -835,9 +835,11 @@ return (
       </article>
     </div>
   </section>
-);
-      
+    );}}
+  
 return (
+
+  <div className="eb-dashboard">
 
   <div className="eb-dashboard">
     {sidebarOpen && (
