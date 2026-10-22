@@ -122,7 +122,7 @@ function App() {
     event.preventDefault();
     setShowAuth(true);
   }}
-> href="#features">
+ >
                   <Sparkles size={17} />
                   Explore Opportunities
                   <ArrowRight size={17} />
