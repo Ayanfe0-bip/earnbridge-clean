@@ -24,7 +24,7 @@ const features = [
     tone: 'blue',
   },
   {
-    icon: ShieldCheck,
+    icon: BadgeCheck,
     number: '02',
     title: 'Make informed choices',
     description:
