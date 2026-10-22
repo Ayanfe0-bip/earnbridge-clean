@@ -1290,3 +1290,75 @@ border-color: #bfdbfe;
 background: #eff6ff;
 color: #1d4ed8;
 }
+/* EarnBridge: keep authentication centred above the landing page */
+.auth-overlay {
+position: fixed !important;
+inset: 0 !important;
+z-index: 99999 !important;
+display: flex !important;
+align-items: center !important;
+justify-content: center !important;
+width: 100% !important;
+height: 100% !important;
+min-height: 100vh;
+box-sizing: border-box;
+padding: 16px !important;
+overflow-y: auto !important;
+background: rgba(15, 23, 42, 0.72) !important;
+}
+
+.auth-panel {
+position: relative !important;
+flex: 0 1 440px !important;
+width: 100% !important;
+max-width: 440px !important;
+max-height: calc(100vh - 32px) !important;
+margin: auto !important;
+box-sizing: border-box !important;
+overflow-y: auto !important;
+background: #ffffff !important;
+color: #172554 !important;
+border: 1px solid #dbeafe !important;
+border-radius: 22px !important;
+box-shadow: 0 24px 70px rgba(15, 23, 42, 0.25) !important;
+}
+
+.auth-brand-mark {
+background: #eff6ff !important;
+color: #2563eb !important;
+}
+
+.auth-eyebrow {
+color: #2563eb !important;
+}
+
+.auth-submit {
+background: #2563eb !important;
+color: #ffffff !important;
+}
+
+.auth-submit:hover:not(:disabled) {
+background: #1d4ed8 !important;
+}
+
+.auth-form input:focus {
+border-color: #2563eb !important;
+box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.13) !important;
+}
+
+.auth-switch button {
+color: #2563eb !important;
+}
+
+@media (max-width: 480px) {
+.auth-overlay {
+padding: 12px !important;
+}
+
+.auth-panel {
+flex-basis: 100% !important;
+max-width: 440px !important;
+max-height: calc(100vh - 24px) !important;
+padding: 23px 20px !important;
+}
+}
