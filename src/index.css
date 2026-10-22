@@ -1133,7 +1133,7 @@ p { margin-top: 0; }
   .hero-note { right: 1px; bottom: 0; }
   .sparkle-one { left: 6px; top: 23px; }
   .sparkle-two { right: 0; bottom: 84px; }
-  .hero-bottom { gap: 9px padding-top: 16px; font-size: 7px; letter-spacing: .07em; }
+  .hero-bottom { gap: 9px; padding-top: 16px; font-size: 7px; letter-spacing: .07em; }
   .hero-bottom-line { width: 15px; }
 
   .features-section { padding: 53px 0; }
