@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 import {
 Activity,
@@ -21,6 +21,7 @@ UserRound,
 Wallet,
 X,
 } from 'lucide-react';
+import { supabase } from './lib/supabase';
 import './WorkerDashboard.css';
 
 type DashboardProps = {
@@ -35,6 +36,19 @@ type PageName =
 | 'Earnings'
 | 'Profile'
 | 'Help & Support';
+
+type Task = {
+id: string;
+title: string;
+description: string;
+category: string;
+reward_kobo: number;
+estimated_minutes: number;
+deadline: string | null;
+status: 'draft' | 'open' | 'closed';
+is_demo: boolean;
+created_at: string;
+};
 
 const navigation: {
 name: PageName;
@@ -63,6 +77,13 @@ const [activePage, setActivePage] = useState<PageName>('Overview');
 const [sidebarOpen, setSidebarOpen] = useState(false);
 const [signingOut, setSigningOut] = useState(false);
 
+const [tasks, setTasks] = useState<Task[]>([]);
+const [tasksLoading, setTasksLoading] = useState(false);
+const [tasksError, setTasksError] = useState('');
+const [searchText, setSearchText] = useState('');
+const [selectedCategory, setSelectedCategory] = useState('All categories');
+const [showPracticeTasks, setShowPracticeTasks] = useState(true);
+
 const fullName =
 user.user_metadata?.full_name ||
 user.user_metadata?.name ||
@@ -76,6 +97,83 @@ const initials = fullName
 .map((part: string) => part[0])
 .join('')
 .toUpperCase();
+
+useEffect(() => {
+if (activePage !== 'Find Tasks') return;
+
+let cancelled = false;
+
+async function loadTasks() {
+  if (!supabase) {
+    setTasksError(
+      'The database connection is not configured. Please contact support.'
+    );
+    return;
+  }
+
+  setTasksLoading(true);
+  setTasksError('');
+
+  const { data, error } = await supabase
+    .from('tasks')
+    .select(
+      'id, title, description, category, reward_kobo, estimated_minutes, deadline, status, is_demo, created_at'
+    )
+    .eq('status', 'open')
+    .order('created_at', { ascending: false });
+
+  if (cancelled) return;
+
+  if (error) {
+    console.error('EarnBridge task loading failed:', error);
+
+    setTasksError(
+      'We could not load tasks. Please refresh this page and try again.'
+    );
+    setTasks([]);
+  } else {
+    setTasks((data ?? []) as Task[]);
+  }
+
+  setTasksLoading(false);
+}
+
+void loadTasks();
+
+return () => {
+  cancelled = true;
+};
+
+}, [activePage]);
+
+const categories = useMemo(
+() => [
+'All categories',
+...Array.from(new Set(tasks.map((task) => task.category))).sort(),
+],
+[tasks]
+);
+
+const filteredTasks = useMemo(() => {
+const query = searchText.trim().toLowerCase();
+
+return tasks.filter((task) => {
+  const matchesSearch =
+    !query ||
+    task.title.toLowerCase().includes(query) ||
+    task.description.toLowerCase().includes(query) ||
+    task.category.toLowerCase().includes(query);
+
+  const matchesCategory =
+    selectedCategory === 'All categories' ||
+    task.category === selectedCategory;
+
+  const matchesDemo = showPracticeTasks || !task.is_demo;
+
+  return matchesSearch && matchesCategory && matchesDemo;
+});
+
+}, [tasks, searchText, selectedCategory, showPracticeTasks]);
 
 async function handleSignOut() {
 if (signingOut) return;
@@ -181,11 +279,11 @@ return (
         <div className="eb-empty-icon">
           <Search size={28} />
         </div>
-        <h4>The task marketplace is being prepared</h4>
+        <h4>Explore the task marketplace</h4>
         <p>
-          We're working on a marketplace for legitimate tasks
-          funded by real clients and task providers. Available
-          tasks and rewards will appear here when they're ready.
+          Browse tasks, read their requirements, and develop
+          useful skills. Demonstration tasks are for practice
+          and do not generate withdrawable rewards.
         </p>
         <button
           className="eb-secondary-button"
@@ -201,13 +299,346 @@ return (
       <div>
         <strong>Your account, your work, your rewards.</strong>
         <p>
-          EarnBridge will not ask you to pay a registration fee
-          to unlock tasks. Rewards should only be recorded when
+          EarnBridge does not require a registration fee to
+          unlock tasks. Rewards should only be recorded after
           genuine work is reviewed and approved.
         </p>
       </div>
     </section>
   </>
+);
+
+}
+
+function renderFindTasks() {
+return (
+<section className="eb-content-card">
+<div className="eb-section-heading">
+<div>
+<h3>Find Tasks</h3>
+<p>
+Tasks are loaded from the EarnBridge database.
+</p>
+</div>
+<Search size={23} />
+</div>
+
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 12,
+        marginBottom: 20,
+      }}
+    >
+      <label
+        htmlFor="eb-task-search"
+        style={{ fontWeight: 700, fontSize: 12 }}
+      >
+        Search tasks
+      </label>
+
+      <input
+        id="eb-task-search"
+        type="search"
+        value={searchText}
+        onChange={(event) => setSearchText(event.target.value)}
+        placeholder="Search writing, research, data entry..."
+        style={{
+          width: '100%',
+          minHeight: 44,
+          padding: '10px 13px',
+          border: '1px solid #dce5f2',
+          borderRadius: 9,
+          font: 'inherit',
+          background: '#fff',
+          color: '#172033',
+        }}
+      />
+
+      <label
+        htmlFor="eb-task-category"
+        style={{ fontWeight: 700, fontSize: 12 }}
+      >
+        Filter by category
+      </label>
+
+      <select
+        id="eb-task-category"
+        value={selectedCategory}
+        onChange={(event) => setSelectedCategory(event.target.value)}
+        style={{
+          width: '100%',
+          minHeight: 44,
+          padding: '10px 13px',
+          border: '1px solid #dce5f2',
+          borderRadius: 9,
+          font: 'inherit',
+          background: '#fff',
+          color: '#172033',
+        }}
+      >
+        {categories.map((category) => (
+          <option key={category} value={category}>
+            {category}
+          </option>
+        ))}
+      </select>
+
+      <label
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 9,
+          fontSize: 12,
+        }}
+      >
+        <input
+          type="checkbox"
+          checked={showPracticeTasks}
+          onChange={(event) =>
+            setShowPracticeTasks(event.target.checked)
+          }
+        />
+        Show demonstration practice tasks
+      </label>
+    </div>
+
+    {tasksLoading && (
+      <div className="eb-empty-state" role="status">
+        <div className="eb-empty-icon">
+          <Clock3 size={28} />
+        </div>
+        <h4>Loading tasks...</h4>
+        <p>Connecting to the EarnBridge marketplace.</p>
+      </div>
+    )}
+
+    {!tasksLoading && tasksError && (
+      <div className="eb-empty-state" role="alert">
+        <div className="eb-empty-icon">
+          <CircleHelp size={28} />
+        </div>
+        <h4>We couldn't load the tasks</h4>
+        <p>{tasksError}</p>
+        <button
+          className="eb-secondary-button"
+          onClick={() => {
+            setActivePage('Overview');
+            window.setTimeout(() => setActivePage('Find Tasks'), 0);
+          }}
+        >
+          Try again <ArrowRight size={16} />
+        </button>
+      </div>
+    )}
+
+    {!tasksLoading && !tasksError && filteredTasks.length === 0 && (
+      <div className="eb-empty-state">
+        <div className="eb-empty-icon">
+          <Search size={28} />
+        </div>
+        <h4>
+          {tasks.length === 0
+            ? 'No open tasks found'
+            : 'No tasks match your search'}
+        </h4>
+        <p>
+          {tasks.length === 0
+            ? 'There are no open tasks to display right now.'
+            : 'Try a different search term or category.'}
+        </p>
+      </div>
+    )}
+
+    {!tasksLoading && !tasksError && filteredTasks.length > 0 && (
+      <>
+        <p
+          style={{
+            color: '#748094',
+            fontSize: 11,
+            margin: '0 0 14px',
+          }}
+        >
+          {filteredTasks.length} task
+          {filteredTasks.length === 1 ? '' : 's'} found
+        </p>
+
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 250px), 1fr))',
+            gap: 14,
+          }}
+        >
+          {filteredTasks.map((task) => (
+            <article
+              key={task.id}
+              style={{
+                minWidth: 0,
+                padding: 17,
+                border: '1px solid #e8edf4',
+                borderRadius: 12,
+                background: '#fff',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                gap: 10,
+              }}
+            >
+              <span
+                style={{
+                  display: 'inline-flex',
+                  padding: '5px 9px',
+                  color: '#1d4ed8',
+                  background: '#eff6ff',
+                  borderRadius: 20,
+                  fontSize: 10,
+                  fontWeight: 700,
+                }}
+              >
+                {task.category}
+              </span>
+
+              {task.is_demo && (
+                <span
+                  style={{
+                    display: 'inline-flex',
+                    padding: '5px 9px',
+                    color: '#92400e',
+                    background: '#fef3c7',
+                    borderRadius: 20,
+                    fontSize: 10,
+                    fontWeight: 800,
+                  }}
+                >
+                  PRACTICE TASK · NO CASH REWARD
+                </span>
+              )}
+
+              <h4
+                style={{
+                  margin: 0,
+                  fontSize: 15,
+                  lineHeight: 1.5,
+                  overflowWrap: 'anywhere',
+                }}
+              >
+                {task.title}
+              </h4>
+
+              <p
+                style={{
+                  margin: 0,
+                  color: '#748094',
+                  fontSize: 12,
+                  lineHeight: 1.8,
+                  overflowWrap: 'anywhere',
+                  whiteSpace: 'pre-wrap',
+                }}
+              >
+                {task.description}
+              </p>
+
+              <div
+                style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: 12,
+                  marginTop: 'auto',
+                  paddingTop: 8,
+                  color: '#526176',
+                  fontSize: 11,
+                }}
+              >
+                <span>
+                  <Clock3
+                    size={13}
+                    style={{
+                      display: 'inline',
+                      verticalAlign: 'middle',
+                      marginRight: 4,
+                    }}
+                  />
+                  {task.estimated_minutes} minutes
+                </span>
+
+                <span>
+                  {task.deadline
+                    ? `Deadline: ${new Date(task.deadline).toLocaleDateString('en-NG')}`
+                    : 'No deadline set'}
+                </span>
+              </div>
+
+              <div
+                style={{
+                  width: '100%',
+                  paddingTop: 12,
+                  borderTop: '1px solid #e8edf4',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 8,
+                }}
+              >
+                <div>
+                  <span
+                    style={{
+                      display: 'block',
+                      color: '#748094',
+                      fontSize: 10,
+                    }}
+                  >
+                    {task.is_demo ? 'Example amount' : 'Listed reward'}
+                  </span>
+                  <strong
+                    style={{
+                      color: '#172033',
+                      fontSize: 18,
+                      overflowWrap: 'anywhere',
+                    }}
+                  >
+                    {money(Number(task.reward_kobo) / 100)}
+                  </strong>
+                </div>
+
+                <span
+                  style={{
+                    padding: '7px 10px',
+                    color: '#526176',
+                    background: '#f1f5f9',
+                    borderRadius: 8,
+                    fontSize: 10,
+                    fontWeight: 700,
+                  }}
+                >
+                  {task.is_demo ? 'For practice' : 'Details coming soon'}
+                </span>
+              </div>
+            </article>
+          ))}
+        </div>
+      </>
+    )}
+
+    <div
+      style={{
+        marginTop: 20,
+        padding: 13,
+        borderRadius: 9,
+        background: '#fffbeb',
+        color: '#92400e',
+        fontSize: 11,
+        lineHeight: 1.8,
+      }}
+    >
+      <strong>Important:</strong> Demonstration tasks are
+      examples for testing the marketplace. Their displayed
+      amounts are not funded rewards and cannot be withdrawn.
+      A task appearing in the database does not by itself
+      guarantee payment.
+    </div>
+  </section>
 );
 
 }
@@ -218,34 +649,7 @@ case 'Overview':
 return renderOverview();
 
   case 'Find Tasks':
-    return (
-      <section className="eb-content-card">
-        <div className="eb-section-heading">
-          <div>
-            <h3>Find Tasks</h3>
-            <p>Explore opportunities that match your skills.</p>
-          </div>
-          <Search size={23} />
-        </div>
-
-        <div className="eb-empty-state">
-          <div className="eb-empty-icon">
-            <BriefcaseBusiness size={28} />
-          </div>
-          <h4>We're preparing the task marketplace</h4>
-          <p>
-            Future opportunities may include writing, research,
-            data entry, graphic design, website testing, and
-            helping local businesses organise their products.
-          </p>
-          <p>
-            No tasks are currently available through this
-            dashboard. Please check back when the marketplace
-            launches.
-          </p>
-        </div>
-      </section>
-    );
+    return renderFindTasks();
 
   case 'My Tasks':
     return (
@@ -253,7 +657,7 @@ return renderOverview();
         <div className="eb-section-heading">
           <div>
             <h3>My Tasks</h3>
-            <p>Track work you've accepted and submitted.</p>
+            <p>Track your accepted and submitted work.</p>
           </div>
           <FileText size={23} />
         </div>
@@ -262,11 +666,11 @@ return renderOverview();
           <div className="eb-empty-icon">
             <FileText size={28} />
           </div>
-          <h4>No task submissions yet</h4>
+          <h4>Task submissions are coming next</h4>
           <p>
-            When the task system is available, you'll be able
-            to track accepted tasks, submit your work, and see
-            review decisions here.
+            The marketplace currently displays available
+            tasks. Accepting tasks and submitting work will
+            be added after the submission workflow is built.
           </p>
         </div>
       </section>
@@ -314,12 +718,10 @@ return renderOverview();
             <div className="eb-empty-icon">
               <Wallet size={28} />
             </div>
-            <h4>Your earnings record starts here</h4>
+            <h4>No rewards have been recorded</h4>
             <p>
-              No rewards or withdrawals have been recorded.
-              Real balances and withdrawals will require a
-              connected, properly secured payment system and
-              funded, approved tasks.
+              The wallet and payout systems are not active yet.
+              Demonstration task amounts are not real earnings.
             </p>
           </div>
         </section>
@@ -332,7 +734,7 @@ return renderOverview();
         <div className="eb-section-heading">
           <div>
             <h3>Your Profile</h3>
-            <p>View your current account information.</p>
+            <p>Your current account information.</p>
           </div>
           <UserRound size={23} />
         </div>
@@ -359,9 +761,6 @@ return renderOverview();
             <span>Email address</span>
             <strong>{user.email || 'Not available'}</strong>
           </div>
-          <div className="eb-profile-field">
-            <span>Account ID</span>
-            <strong className="eb-account-id">{user.id}</strong>
           </div>
           <div className="eb-profile-field">
             <span>Email verification</span>
@@ -369,199 +768,198 @@ return renderOverview();
               {user.email_confirmed_at ? 'Verified' : 'Not confirmed'}
             </strong>
           </div>
+        </div>    <p className="eb-profile-note">
+      Profile editing, phone number, and payout details
+      will be added after the secure profile system is built.
+    </p>
+  </section>
+);
+
+case 'Help & Support':
+return (
+<section className="eb-content-card">
+<div className="eb-section-heading">
+<div>
+<h3>Help & Support</h3>
+<p>Important information about EarnBridge.</p>
+</div>
+<CircleHelp size={23} />
+</div>
+
+    <div className="eb-help-list">
+      <article className="eb-help-item">
+        <ShieldCheck size={23} />
+        <div>
+          <h4>Is registration free?</h4>
+          <p>
+            Workers should not have to pay a fee to unlock tasks.
+          </p>
         </div>
+      </article>
 
-        <p className="eb-profile-note">
-          Profile editing, phone number, and payout details
-          will be added after the secure profile system is built.
-        </p>
-      </section>
-    );
-
-  case 'Help & Support':
-    return (
-      <section className="eb-content-card">
-        <div className="eb-section-heading">
-          <div>
-            <h3>Help & Support</h3>
-            <p>Important information about using EarnBridge.</p>
-          </div>
-          <CircleHelp size={23} />
+      <article className="eb-help-item">
+        <Coins size={23} />
+        <div>
+          <h4>When can I earn?</h4>
+          <p>
+            Real earnings depend on genuine tasks, completed
+            requirements, review, and funding.
+          </p>
         </div>
+      </article>
 
-        <div className="eb-help-list">
-          <article className="eb-help-item">
-            <ShieldCheck size={23} />
-            <div>
-              <h4>Is registration free?</h4>
-              <p>
-                EarnBridge is designed to let workers register
-                without paying a fee to unlock earning tasks.
-              </p>
-            </div>
-          </article>
-
-          <article className="eb-help-item">
-            <Coins size={23} />
-            <div>
-              <h4>When can I earn?</h4>
-              <p>
-                Earnings depend on real tasks becoming available,
-                completing the requirements, and getting your
-                submitted work approved.
-              </p>
-            </div>
-          </article>
-
-          <article className="eb-help-item">
-            <Wallet size={23} />
-            <div>
-              <h4>Can I withdraw money now?</h4>
-              <p>
-                The payout system is not active yet. No payout
-                should be promised until funding and payment
-                processing have been implemented and tested.
-              </p>
-            </div>
-          </article>
-
-          <article className="eb-help-item">
-            <ShieldCheck size={23} />
-            <div>
-              <h4>How do I stay safe?</h4>
-              <p>
-                Never share your password or authentication
-                codes. Be cautious of anyone asking you to pay
-                money to unlock a supposed reward.
-              </p>
-            </div>
-          </article>
+      <article className="eb-help-item">
+        <Wallet size={23} />
+        <div>
+          <h4>Can I withdraw money now?</h4>
+          <p>
+            The payout system is not active. No withdrawals
+            should be promised before it is implemented.
+          </p>
         </div>
-      </section>
-    );
+      </article>
+
+      <article className="eb-help-item">
+        <ShieldCheck size={23} />
+        <div>
+          <h4>How do I stay safe?</h4>
+          <p>
+            Never share your password or authentication codes.
+            Be cautious of anyone demanding payment to unlock
+            a supposed reward.
+          </p>
+        </div>
+      </article>
+    </div>
+  </section>
+);
+
 }
-
 }
 
 return (
-<div className="eb-dashboard">
-{sidebarOpen && (
-<button
-className="eb-mobile-overlay"
-aria-label="Close navigation"
-onClick={() => setSidebarOpen(false)}
-/>
-)}
 
-  <aside className={`eb-sidebar ${sidebarOpen ? 'eb-sidebar-open' : ''}`}>
-    <div className="eb-brand">
-      <div className="eb-brand-mark">
-        <Activity size={23} />
-      </div>
-      <div>
-        <strong>EarnBridge</strong>
-        <span>Opportunities for everyone</span>
-      </div>
+  <div className="eb-dashboard">
+    {sidebarOpen && (
       <button
-        className="eb-close-sidebar"
+        className="eb-mobile-overlay"
         aria-label="Close navigation"
         onClick={() => setSidebarOpen(false)}
-      >
-        <X size={21} />
-      </button>
+      />
+    )}<aside
+  className={`eb-sidebar ${sidebarOpen ? 'eb-sidebar-open' : ''}`}
+>
+  <div className="eb-brand">
+    <div className="eb-brand-mark">
+      <Activity size={23} />
     </div>
+    <div>
+      <strong>EarnBridge</strong>
+      <span>Opportunities for everyone</span>
+    </div>
+    <button
+      className="eb-close-sidebar"
+      aria-label="Close navigation"
+      onClick={() => setSidebarOpen(false)}
+    >
+      <X size={21} />
+    </button>
+  </div>
 
-    <div className="eb-nav-label">WORKSPACE</div>
+  <div className="eb-nav-label">WORKSPACE</div>
 
-    <nav className="eb-navigation" aria-label="Main navigation">
-      {navigation.map(({ name, icon: Icon }) => (
-        <button
-          key={name}
-          className={`eb-nav-item ${activePage === name ? 'eb-nav-active' : ''}`}
-          onClick={() => openPage(name)}
-          aria-current={activePage === name ? 'page' : undefined}
-        >
-          <Icon size={19} />
-          <span>{name}</span>
-          {activePage === name && (
-            <span className="eb-nav-indicator" />
-          )}
-        </button>
-      ))}
-    </nav>
-
-    <div className="eb-sidebar-bottom">
-      <div className="eb-sidebar-tip">
-        <Sparkles size={20} />
-        <strong>Build your future</strong>
-        <p>Keep learning and look for opportunities to grow.</p>
-      </div>
-
+  <nav className="eb-navigation" aria-label="Main navigation">
+    {navigation.map(({ name, icon: Icon }) => (
       <button
-        className="eb-signout-button"
-        onClick={handleSignOut}
-        disabled={signingOut}
+        key={name}
+        className={`eb-nav-item ${
+          activePage === name ? 'eb-nav-active' : ''
+        }`}
+        onClick={() => openPage(name)}
+        aria-current={activePage === name ? 'page' : undefined}
       >
-        <LogOut size={19} />
-        {signingOut ? 'Signing out...' : 'Sign out'}
+        <Icon size={19} />
+        <span>{name}</span>
+        {activePage === name && (
+          <span className="eb-nav-indicator" />
+        )}
       </button>
+    ))}
+  </nav>
 
-      <p className="eb-sidebar-footer">
-        © {new Date().getFullYear()} EarnBridge
-      </p>
+  <div className="eb-sidebar-bottom">
+    <div className="eb-sidebar-tip">
+      <Sparkles size={20} />
+      <strong>Build your future</strong>
+      <p>Keep learning and look for opportunities to grow.</p>
     </div>
-  </aside>
 
-  <main className="eb-main">
-    <header className="eb-topbar">
-      <button
-        className="eb-menu-button"
-        aria-label="Open navigation"
-        onClick={() => setSidebarOpen(true)}
-      >
-        <Menu size={23} />
-      </button>
+    <button
+      className="eb-signout-button"
+      onClick={handleSignOut}
+      disabled={signingOut}
+    >
+      <LogOut size={19} />
+      {signingOut ? 'Signing out...' : 'Sign out'}
+    </button>
 
-      <div className="eb-breadcrumb">
-        <span>Workspace</span>
-        <span className="eb-breadcrumb-divider">/</span>
-        <strong>{activePage}</strong>
-      </div>
+    <p className="eb-sidebar-footer">
+      © {new Date().getFullYear()} EarnBridge
+    </p>
+  </div>
+</aside>
 
-      <div className="eb-topbar-actions">
-        <span className="eb-topbar-status">
-          <span className="eb-status-dot" />
-          Account active
-        </span>
-        <div className="eb-avatar">{initials || 'W'}</div>
-      </div>
-    </header>
+<main className="eb-main">
+  <header className="eb-topbar">
+    <button
+      className="eb-menu-button"
+      aria-label="Open navigation"
+      onClick={() => setSidebarOpen(true)}
+    >
+      <Menu size={23} />
+    </button>
 
-    <div className="eb-page-content">
-      <div className="eb-page-title">
-        <div>
-          <h1>{activePage}</h1>
-          <p>
-            {activePage === 'Overview'
-              ? 'Your personal workspace for tasks and opportunities.'
-              : `Manage your ${activePage.toLowerCase()} information.`}
-          </p>
-        </div>
-        <span className="eb-page-date">
-          <Clock3 size={15} />
-          Worker workspace
-        </span>
-      </div>
-
-      {renderPageContent()}
-
-      <footer className="eb-dashboard-footer">
-        <span>EarnBridge · Start building your next opportunity.</span>
-        <span>Created by Ayanfe Innovation Labs Limited</span>
-      </footer>
+    <div className="eb-breadcrumb">
+      <span>Workspace</span>
+      <span className="eb-breadcrumb-divider">/</span>
+      <strong>{activePage}</strong>
     </div>
-  </main>
-</div>
 
+    <div className="eb-topbar-actions">
+      <span className="eb-topbar-status">
+        <span className="eb-status-dot" />
+        Account active
+      </span>
+      <div className="eb-avatar">{initials || 'W'}</div>
+    </div>
+  </header>
+
+  <div className="eb-page-content">
+    <div className="eb-page-title">
+      <div>
+        <h1>{activePage}</h1>
+        <p>
+          {activePage === 'Overview'
+            ? 'Your personal workspace for tasks and opportunities.'
+            : `Manage your ${activePage.toLowerCase()} information.`}
+        </p>
+      </div>
+      <span className="eb-page-date">
+        <Clock3 size={15} />
+        Worker workspace
+      </span>
+    </div>
+
+    {renderPageContent()}
+
+    <footer className="eb-dashboard-footer">
+      <span>EarnBridge · Start building your next opportunity.</span>
+      <span>Created by Ayanfe Innovation Labs Limited</span>
+    </footer>
+  </div>
+</main>
+
+  </div>
 );
-  }
+    }
+      
