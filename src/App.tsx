@@ -1,10 +1,8 @@
 import {
-  ArrowDownRight,
   ArrowRight,
   BadgeCheck,
+  Bell,
   CheckCircle2,
-  ChevronRight,
-  Coins,
   Compass,
   HandCoins,
   HeartHandshake,
@@ -14,7 +12,6 @@ import {
   TrendingUp,
   Users,
   Wallet,
-  Zap,
 } from 'lucide-react';
 
 const features = [
@@ -44,10 +41,10 @@ const features = [
   },
 ];
 
-const highlights = [
-  { icon: CheckCircle2, text: 'Clear opportunity information' },
-  { icon: ShieldCheck, text: 'A thoughtful, safety-first approach' },
-  { icon: TrendingUp, text: 'Built around progress and growth' },
+const benefits = [
+  'Clear opportunity information',
+  'A safety-first approach',
+  'Built around progress and growth',
 ];
 
 function App() {
@@ -57,19 +54,26 @@ function App() {
         <div className="container navbar">
           <a className="brand" href="#home" aria-label="EarnBridge home">
             <span className="brand-mark">
-              <HandCoins size={23} strokeWidth={2.2} />
+              <HandCoins size={23} />
             </span>
             <span className="brand-name">
               Earn<span>Bridge</span>
             </span>
           </a>
 
+          <nav className="main-nav" aria-label="Main navigation">
+            <a href="#home" className="nav-active">Home</a>
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#about">About</a>
+          </nav>
+
           <div className="header-right">
             <span className="header-badge">
               <span className="status-dot" />
-              Foundation preview
+              Foundation Preview
             </span>
-            <a className="header-link" href="#how-it-works">
+            <a className="header-cta" href="#features">
               Explore <ArrowRight size={15} />
             </a>
           </div>
@@ -84,7 +88,7 @@ function App() {
           <div className="container hero-grid">
             <div className="hero-copy">
               <div className="eyebrow">
-                <Sparkles size={15} />
+                <span className="eyebrow-line" />
                 YOUR NEXT OPPORTUNITY STARTS HERE
               </div>
 
@@ -100,17 +104,20 @@ function App() {
               </p>
 
               <div className="hero-actions">
-                <a className="button button-primary" href="#opportunities">
-                  Explore the vision <ArrowRight size={18} />
+                <a className="button button-primary" href="#features">
+                  <Sparkles size={17} />
+                  Explore Opportunities
+                  <ArrowRight size={17} />
                 </a>
                 <a className="button button-secondary" href="#how-it-works">
-                  How it works
+                  <span className="play-icon">▶</span>
+                  How It Works
                 </a>
               </div>
 
               <div className="trust-note">
                 <span className="trust-icon">
-                  <ShieldCheck size={17} />
+                  <ShieldCheck size={24} />
                 </span>
                 <span>
                   <strong>Built with purpose</strong>
@@ -119,64 +126,55 @@ function App() {
               </div>
             </div>
 
-            <div className="hero-visual" aria-label="EarnBridge opportunity illustration">
-              <div className="visual-halo" />
-              <div className="visual-ring visual-ring-one" />
-              <div className="visual-ring visual-ring-two" />
-
-              <div className="main-illustration">
-                <div className="illustration-top">
-                  <span className="mini-brand">
-                    <HandCoins size={19} />
+            <div className="hero-visual">
+              <div className="photo-backdrop" />
+              <div className="photo-frame">
+                <img
+                  className="hero-person"
+                  src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=85"
+                  alt="Smiling young man representing the EarnBridge community"
+                />
+                <div className="photo-caption">
+                  <span className="caption-check">
+                    <CheckCircle2 size={17} />
                   </span>
-                  <span className="illustration-label">YOUR JOURNEY</span>
-                  <Sparkles size={18} className="gold-sparkle" />
-                </div>
-
-                <div className="illustration-title">
-                  <small>Every step counts</small>
-                  <h2>Make progress<br />your own way.</h2>
-                </div>
-
-                <div className="progress-track">
-                  <span />
-                </div>
-
-                <div className="illustration-bottom">
-                  <span>Opportunity explorer</span>
-                  <span className="round-arrow">
-                    <ArrowDownRight size={18} />
+                  <span>
+                    <strong>Your journey matters</strong>
+                    <small>Learn. Explore. Grow.</small>
                   </span>
                 </div>
-
-                <div className="illustration-decoration decoration-one">
-                  <Coins size={25} />
-                </div>
-                <div className="illustration-decoration decoration-two">
-                  <Target size={24} />
-                </div>
               </div>
 
-              <div className="floating-card floating-card-top">
-                <span className="float-icon float-icon-gold">
-                  <Zap size={19} />
+              <div className="floating-card notification-one">
+                <span className="notification-icon icon-gold">
+                  <Sparkles size={19} />
                 </span>
-                <span>
-                  <strong>New possibilities</strong>
-                  <small>Your next step begins here</small>
+                <span className="notification-copy">
+                  <strong>Reward example</strong>
+                  <small>Imagine completing your first task.</small>
                 </span>
+                <span className="notification-time">Now</span>
               </div>
 
-              <div className="floating-card floating-card-bottom">
-                <span className="float-icon float-icon-blue">
-                  <TrendingUp size={20} />
+              <div className="floating-card notification-two">
+                <span className="notification-icon icon-blue">
+                  <Bell size={19} />
                 </span>
-                <span>
-                  <strong>Progress that matters</strong>
-                  <small>Learn. Explore. Grow.</small>
+                <span className="notification-copy">
+                  <strong>New opportunity</strong>
+                  <small>Explore something that suits you.</small>
                 </span>
-                <BadgeCheck className="verified-icon" size={19} />
+                <span className="notification-time">New</span>
               </div>
+
+              <div className="hero-note">
+                <span>Real opportunities.</span>
+                <strong>Real growth.</strong>
+                <span className="hero-note-line" />
+              </div>
+
+              <div className="visual-sparkle sparkle-one">✦</div>
+              <div className="visual-sparkle sparkle-two">✧</div>
             </div>
           </div>
 
@@ -189,14 +187,19 @@ function App() {
           </div>
         </section>
 
-        <section className="features-section" id="opportunities">
+        <section className="features-section" id="features">
           <div className="container">
             <div className="section-heading">
               <div>
                 <div className="eyebrow">
-                  <Sparkles size={14} /> THE EARNBRIDGE APPROACH
+                  <span className="eyebrow-line" />
+                  THE EARNBRIDGE APPROACH
                 </div>
-                <h2>A smarter way to<br />explore what's possible.</h2>
+                <h2>
+                  A smarter way to
+                  <br />
+                  explore what's possible.
+                </h2>
               </div>
               <p>
                 Your journey should begin with clarity. We're building a
@@ -213,7 +216,7 @@ function App() {
                   <article className="feature-card" key={feature.number}>
                     <div className="feature-card-top">
                       <span className={`feature-icon ${feature.tone}`}>
-                        <Icon size={24} strokeWidth={1.9} />
+                        <Icon size={25} strokeWidth={1.9} />
                       </span>
                       <span className="feature-number">{feature.number}</span>
                     </div>
@@ -222,7 +225,7 @@ function App() {
                     <p>{feature.description}</p>
 
                     <div className="feature-card-footer">
-                      <span>Discover more</span>
+                      <span>Explore the vision</span>
                       <span className="feature-arrow">
                         <ArrowRight size={16} />
                       </span>
@@ -240,73 +243,121 @@ function App() {
               <div className="journey-content">
                 <span className="stage-label">
                   <span className="stage-dot" />
-                  STAGE 01 · THE FOUNDATION
+                  STAGE 01 · FOUNDATION
                 </span>
 
-                <h2>Built one step<br />at a time.</h2>
+                <h2>
+                  Built one step
+                  <br />
+                  at a time.
+                </h2>
 
                 <p>
                   We're laying the groundwork for a platform that helps people
                   discover opportunities and make more informed decisions.
                 </p>
 
-                <div className="journey-checklist">
-                  {highlights.map((item) => {
-                    const Icon = item.icon;
+                <a className="button button-primary journey-button" href="#about">
+                  Learn More <ArrowRight size={17} />
+                </a>
+              </div>
 
-                    return (
-                      <div className="checklist-item" key={item.text}>
-                        <Icon size={18} />
-                        <span>{item.text}</span>
-                      </div>
-                    );
-                  })}
-                </div>
+              <div className="journey-checklist">
+                {benefits.map((benefit) => (
+                  <div className="checklist-item" key={benefit}>
+                    <CheckCircle2 size={19} />
+                    <span>{benefit}</span>
+                  </div>
+                ))}
               </div>
 
               <div className="journey-visual">
                 <div className="journey-orbit orbit-one" />
                 <div className="journey-orbit orbit-two" />
 
-                <div className="journey-emblem">
-                  <HeartHandshake size={43} strokeWidth={1.6} />
+                <div className="journey-phone">
+                  <div className="phone-speaker" />
+                  <div className="phone-brand">
+                    <HandCoins size={17} />
+                    EarnBridge
+                  </div>
+                  <div className="phone-message">
+                    <span className="phone-message-icon">
+                      <Sparkles size={20} />
+                    </span>
+                    <span>
+                      <small>YOUR NEXT STEP</small>
+                      <strong>Opportunity awaits</strong>
+                    </span>
+                  </div>
+                  <div className="phone-balance">
+                    <small>Your progress</small>
+                    <strong>One step at a time</strong>
+                    <div className="phone-progress">
+                      <span />
+                    </div>
+                  </div>
+                  <div className="phone-bottom-dots">
+                    <span />
+                    <span />
+                    <span />
+                  </div>
                 </div>
 
-                <div className="journey-mini-card">
-                  <span className="journey-mini-icon">
-                    <CheckCircle2 size={20} />
-                  </span>
-                  <span>
-                    <strong>Foundation UI</strong>
-                    <small>Stage 1 · In progress</small>
-                  </span>
-                </div>
-
-                <div className="journey-caption">
-                  <span className="caption-line" />
-                  <span>THE JOURNEY STARTS HERE</span>
-                </div>
+                <div className="coin-decoration">₦</div>
+                <span className="journey-star star-one">✦</span>
+                <span className="journey-star star-two">✧</span>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="closing-section">
+        <section className="closing-section" id="about">
           <div className="container closing-card">
-            <div className="closing-icon">
-              <Wallet size={26} />
+            <div className="closing-emblem">
+              <HeartHandshake size={35} />
             </div>
+
             <div className="closing-copy">
               <span>THE FUTURE WE'RE BUILDING</span>
-              <h2>Make your next step count.</h2>
+              <h2>
+                Make your next step count.
+              </h2>
               <p>
                 EarnBridge is being developed with a simple idea: opportunity
                 should be easier to explore and understand.
               </p>
             </div>
-            <a className="closing-link" href="#home" aria-label="Back to top">
-              <ChevronRight size={22} />
-            </a>
+
+            <div className="closing-benefits">
+              <div>
+                <span className="closing-benefit-icon">
+                  <Users size={20} />
+                </span>
+                <span>
+                  <strong>Build valuable skills</strong>
+                  <small>Learn and grow</small>
+                </span>
+              </div>
+              <div>
+                <span className="closing-benefit-icon">
+                  <Target size={20} />
+                </span>
+                <span>
+                  <strong>Explore opportunities</strong>
+                  <small>Find what fits you</small>
+                </span>
+              </div>
+              <div>
+                <span className="closing-benefit-icon">
+                  <TrendingUp size={20} />
+                </span>
+                <span>
+                  <strong>Create a better future</strong>
+                  <small>Step by step</small>
+                </span>
+              </div>
+            </div>
           </div>
         </section>
       </main>
@@ -327,17 +378,22 @@ function App() {
 
           <div className="footer-divider" />
 
+          <nav className="footer-nav" aria-label="Footer navigation">
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#about">About</a>
+          </nav>
+
           <div className="footer-company">
-            <span className="footer-company-label">A PRODUCT BY</span>
+            <span className="footer-company-label">
+              <ShieldCheck size={18} /> A PRODUCT BY
+            </span>
             <strong>Ayanfe Innovation Labs Limited</strong>
             <span className="footer-copyright">
-              Designed for progress. Built with purpose.
+              © 2026 EarnBridge. Built with purpose.
             </span>
           </div>
-
-          <a className="back-to-top" href="#home">
-            Back to top <ArrowRight size={15} />
-          </a>
         </div>
       </footer>
     </div>
