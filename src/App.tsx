@@ -6,7 +6,7 @@ import {
   Compass,
   HandCoins,
   HeartHandshake,
-  ShieldCheck,
+  BadgeCheck,
   Sparkles,
   Target,
   TrendingUp,
@@ -277,10 +277,10 @@ function App() {
 
                 <div className="journey-phone">
                   <div className="phone-speaker" />
-                  <div className="phone-brand">
-                    <HandCoins size={17} />
+                 <div className="phone-brand">
+                    <Wallet size={17} />
                     EarnBridge
-                  </div>
+                     </div> 
                   <div className="phone-message">
                     <span className="phone-message-icon">
                       <Sparkles size={20} />
