@@ -729,40 +729,6 @@ return renderOverview();
     );
 
   case 'Profile':
-    return (
-      <section className="eb-content-card">
-        <div className="eb-section-heading">
-          <div>
-            <h3>Your Profile</h3>
-            <p>Your current account information.</p>
-          </div>
-          <UserRound size={23} />
-        </div>
-
-        <div className="eb-profile-header">
-          <div className="eb-avatar eb-profile-avatar">
-            {initials || 'W'}
-          </div>
-          <div>
-            <h4>{fullName}</h4>
-            <p>EarnBridge worker account</p>
-            <span className="eb-account-badge">
-              <BadgeCheck size={14} /> Registered account
-            </span>
-          </div>
-        </div>
-
-        <div className="eb-profile-details">
-          <div className="eb-profile-field">
-            <span>Full name</span>
-            <strong>{fullName}</strong>
-          </div>
-          <div className="eb-profile-field">
-            <span>Email address</span>
-            <strong>{user.email || 'Not available'}</strong>
-          </div>
-          </div>
-          case 'Profile':
 return (
 <section className="eb-content-card">
 <div className="eb-section-heading">
@@ -870,10 +836,7 @@ return (
     </div>
   </section>
 );
-
-}
-}
-
+      
 return (
 
   <div className="eb-dashboard">
