@@ -77,8 +77,15 @@ function App() {
               <span className="status-dot" />
               Foundation Preview
             </span>
-            <a className="header-cta" href="#features">
-              Explore <ArrowRight size={15} />
+            <a
+  className="header-cta"
+  href="#signup"
+  onClick={(event) => {
+    event.preventDefault();
+    setShowAuth(true);
+  }}
+>
+           Explore <ArrowRight size={15} />
             </a>
           </div>
         </div>
@@ -108,7 +115,14 @@ function App() {
               </p>
 
               <div className="hero-actions">
-                <a className="button button-primary" href="#features">
+                <a
+  className="button button-primary"
+  href="#signup"
+  onClick={(event) => {
+    event.preventDefault();
+    setShowAuth(true);
+  }}
+> href="#features">
                   <Sparkles size={17} />
                   Explore Opportunities
                   <ArrowRight size={17} />
