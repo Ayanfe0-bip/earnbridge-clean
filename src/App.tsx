@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import Auth from './Auth';
 import {
   ArrowRight,
   BadgeCheck,
@@ -13,7 +15,10 @@ import {
   Users,
   Wallet,
 } from 'lucide-react';
-
+const [showAuth, setShowAuth] = useState(false);
+{showAuth && (
+  <Auth onClose={() => setShowAuth(false)} />
+)}
 const features = [
   {
     icon: Compass,
