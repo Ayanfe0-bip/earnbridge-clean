@@ -15,10 +15,7 @@ import {
   Users,
   Wallet,
 } from 'lucide-react';
-const [showAuth, setShowAuth] = useState(false);
-{showAuth && (
-  <Auth onClose={() => setShowAuth(false)} />
-)}
+
 const features = [
   {
     icon: Compass,
@@ -53,6 +50,8 @@ const benefits = [
 ];
 
 function App() {
+  const [showAuth, setShowAuth] = useState(false);
+
   return (
     <div className="page-shell">
       <header className="site-header">
@@ -400,7 +399,11 @@ function App() {
             </span>
           </div>
         </div>
-      </footer>
+            </footer>
+
+      {showAuth && (
+        <Auth onClose={() => setShowAuth(false)} />
+      )}
     </div>
   );
 }
