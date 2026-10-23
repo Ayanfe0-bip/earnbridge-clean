@@ -701,7 +701,7 @@ export default function WorkerDashboard({
         </div>
       </section>
     );
-  )
+  }
     function renderMyTasks() {
     return (
       <section className="eb-content-card">
