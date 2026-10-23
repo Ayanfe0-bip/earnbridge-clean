@@ -1003,7 +1003,22 @@ Your completed work
               ))}
             </div>
           )}
-
+        {actionError && (
+<p
+role="alert"
+style={{
+marginTop: 16,
+padding: 12,
+borderRadius: 8,
+background: '#fee2e2',
+color: '#991b1b',
+fontSize: 12,
+lineHeight: 1.7,
+}}
+>
+{actionError}
+</p>
+)}
         {notice && (
           <p
             role="status"
