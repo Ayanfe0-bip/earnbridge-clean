@@ -897,51 +897,68 @@ export default function WorkerDashboard({
                           return;
                         }
 
-                        void submitWork(submission);
-                      }}
-                      style={{
-                        display: 'grid',
-                        gap: 10,
-                      }}
-                    >
-                      <label
-                        htmlFor={`submission-${submission.id}`}
-                        style={{
-                          fontSize: 12,
-                          fontWeight: 700,
-                        }}
-                      >
-                        Your completed work
-                      </label>
+                        {submission.status === 'accepted' && (
+<form
+onSubmit={(event) => {
+event.preventDefault();
+setNotice('');
+void submitWork(submission);
+}}
+style={{
+display: 'grid',
+gap: 10,
+}}
+>
+<label
+htmlFor={"submission-${submission.id}"}
+style={{
+fontSize: 12,
+fontWeight: 700,
+}}
+>
+Your completed work
+</label>
 
-                      <textarea
-                        id={`submission-${submission.id}`}
-                        name="submitted_work"
-                        required
-                        rows={4}
-                        placeholder="Describe your completed work or provide the requested result..."
-                        style={{
-                          width: '100%',
-                          boxSizing: 'border-box',
-                          padding: 12,
-                          border: '1px solid #dce5f2',
-                          borderRadius: 9,
-                          font: 'inherit',
-                          fontSize: 13,
-                          resize: 'vertical',
-                        }}
-                      />
+                  <textarea
+                    id={`submission-${submission.id}`}
+                    name="submitted_work"
+                    required
+                    rows={4}
+                    value={drafts[submission.id] ?? ''}
+                    onChange={(event) =>
+                      setDrafts((previous) => ({
+                        ...previous,
+                        [submission.id]: event.target.value,
+                      }))
+                    }
+                    placeholder="Describe your completed work or provide the requested result..."
+                    style={{
+                      width: '100%',
+                      boxSizing: 'border-box',
+                      padding: 12,
+                      border: '1px solid #dce5f2',
+                      borderRadius: 9,
+                      font: 'inherit',
+                      fontSize: 13,
+                      resize: 'vertical',
+                    }}
+                  />
 
-                      <button
-                        type="submit"
-                        className="eb-primary-button"
-                      >
-                        <CheckCircle2 size={16} />
-                        Submit completed work
-                      </button>
-                    </form>
-                  )}
-
+                  <button
+                    type="submit"
+                    className="eb-primary-button"
+                    disabled={
+                      Boolean(submittingId) ||
+                      submittingId === submission.id
+                    }
+                  >
+                    <CheckCircle2 size={16} />
+                    {submittingId === submission.id
+                      ? 'Submitting...'
+                      : 'Submit completed work'}
+                  </button>
+                </form>
+              )}
                   {submission.status === 'submitted' && (
                     <p
                       style={{
