@@ -882,70 +882,66 @@ export default function WorkerDashboard({
                       </p>
                     </div>
                   )}
+                                   {submission.status === 'accepted' && (
+                    <form
+                      onSubmit={(event) => {
+                        event.preventDefault();
+                        setNotice('');
+                        setActionError('');
+                        void submitWork(submission);
+                      }}
+                      style={{
+                        display: 'grid',
+                        gap: 10,
+                      }}
+                    >
+                      <label
+                        htmlFor={`submission-${submission.id}`}
+                        style={{
+                          fontSize: 12,
+                          fontWeight: 700,
+                        }}
+                      >
+                        Your completed work
+                      </label>
 
+                      <textarea
+                        id={`submission-${submission.id}`}
+                        name="submitted_work"
+                        required
+                        rows={4}
+                        value={drafts[submission.id] ?? ''}
+                        onChange={(event) =>
+                          setDrafts((previous) => ({
+                            ...previous,
+                            [submission.id]: event.target.value,
+                          }))
+                        }
+                        placeholder="Describe your completed work or provide the requested result..."
+                        style={{
+                          width: '100%',
+                          boxSizing: 'border-box',
+                          padding: 12,
+                          border: '1px solid #dce5f2',
+                          borderRadius: 9,
+                          font: 'inherit',
+                          fontSize: 13,
+                          resize: 'vertical',
+                        }}
+                      />
 
-                        {submission.status === 'accepted' && (
-<form
-onSubmit={(event) => {
-event.preventDefault();
-setNotice('');
-void submitWork(submission);
-}}
-style={{
-display: 'grid',
-gap: 10,
-}}
->
-<label
-htmlFor={"submission-${submission.id}"}
-style={{
-fontSize: 12,
-fontWeight: 700,
-}}
->
-Your completed work
-</label>
-
-                  <textarea
-                    id={`submission-${submission.id}`}
-                    name="submitted_work"
-                    required
-                    rows={4}
-                    value={drafts[submission.id] ?? ''}
-                    onChange={(event) =>
-                      setDrafts((previous) => ({
-                        ...previous,
-                        [submission.id]: event.target.value,
-                      }))
-                    }
-                    placeholder="Describe your completed work or provide the requested result..."
-                    style={{
-                      width: '100%',
-                      boxSizing: 'border-box',
-                      padding: 12,
-                      border: '1px solid #dce5f2',
-                      borderRadius: 9,
-                      font: 'inherit',
-                      fontSize: 13,
-                      resize: 'vertical',
-                    }}
-                  />
-
-                  <button
-                    type="submit"
-                    className="eb-primary-button"
-                    disabled={
-                      Boolean(submittingId) ||
-                      submittingId === submission.id
-                    }
-                  >
-                    <CheckCircle2 size={16} />
-                    {submittingId === submission.id
-                      ? 'Submitting...'
-                      : 'Submit completed work'}
-                  </button>
-                </form>
-              )}
+                      <button
+                        type="submit"
+                        className="eb-primary-button"
+                        disabled={submittingId === submission.id}
+                      >
+                        <CheckCircle2 size={16} />
+                        {submittingId === submission.id
+                          ? 'Submitting...'
+                          : 'Submit completed work'}
+                      </button>
+                    </form>
+                  )} 
                   {submission.status === 'submitted' && (
                     <p
                       style={{
@@ -990,22 +986,23 @@ Your completed work
               ))}
             </div>
           )}
-        {actionError && (
-<p
-role="alert"
-style={{
-marginTop: 16,
-padding: 12,
-borderRadius: 8,
-background: '#fee2e2',
-color: '#991b1b',
-fontSize: 12,
-lineHeight: 1.7,
-}}
->
-{actionError}
-</p>
-)}
+                {actionError && (
+          <p
+            role="alert"
+            style={{
+              marginTop: 16,
+              padding: 12,
+              borderRadius: 8,
+              background: '#fee2e2',
+              color: '#991b1b',
+              fontSize: 12,
+              lineHeight: 1.7,
+            }}
+          >
+            {actionError}
+          </p>
+        )}
+        
         {notice && (
           <p
             role="status"
