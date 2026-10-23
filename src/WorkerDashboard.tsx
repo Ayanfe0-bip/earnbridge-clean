@@ -136,7 +136,7 @@ export default function WorkerDashboard({
     .split(/\s+/)
     .filter(Boolean)
     .slice(0, 2)
-    .map((part) => part[0])
+    .map((part: string) => part[0])
     .join('')
     .toUpperCase();
 
@@ -820,7 +820,7 @@ export default function WorkerDashboard({
                         textTransform: 'uppercase',
                       }}
                     >
-                      {submission.status.replaceAll('_', ' ')}
+                      {submission.status.replace(/_/g, ' ')}
                     </span>
                   </div>
 
@@ -897,7 +897,7 @@ export default function WorkerDashboard({
                           return;
                         }
 
-                        void submitWork(submission.id, field.value.trim());
+                        void submitWork(submission);
                         form.reset();
                       }}
                       style={{
