@@ -898,7 +898,6 @@ export default function WorkerDashboard({
                         }
 
                         void submitWork(submission);
-                        form.reset();
                       }}
                       style={{
                         display: 'grid',
