@@ -883,19 +883,6 @@ export default function WorkerDashboard({
                     </div>
                   )}
 
-                  {submission.status === 'accepted' && (
-                    <form
-                      onSubmit={(event) => {
-                        event.preventDefault();
-                        const form = event.currentTarget;
-                        const field = form.elements.namedItem(
-                          'submitted_work'
-                        ) as HTMLTextAreaElement | null;
-
-                        if (!field?.value.trim()) {
-                          setNotice('Please describe your completed work.');
-                          return;
-                        }
 
                         {submission.status === 'accepted' && (
 <form
