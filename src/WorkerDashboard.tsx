@@ -521,15 +521,20 @@ return () => {
           </div>
         </section>
 
-        <section className="eb-stats-grid">
-          <article className="eb-stat-card">
-            <span className="eb-stat-icon eb-icon-blue">
-              <Wallet size={21} />
-            </span>
-            <p>Available balance</p>
-            <h3>{money(0)}</h3>
-            <span className="eb-stat-note">Approved rewards only</span>
-          </article>
+        <article className="eb-stat-card">
+  <span className="eb-stat-icon eb-icon-blue">
+    <Wallet size={21} />
+  </span>
+  <p>Available balance</p>
+  <h3>
+    {walletLoading
+      ? 'Loading...'
+      : wallet
+        ? money(wallet.available_kobo / 100)
+        : '—'}
+  </h3>
+  <span className="eb-stat-note">Approved rewards only</span>
+</article>
 
           <article className="eb-stat-card">
             <span className="eb-stat-icon eb-icon-green">
