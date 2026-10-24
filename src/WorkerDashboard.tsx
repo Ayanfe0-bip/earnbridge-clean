@@ -104,8 +104,16 @@ export default function WorkerDashboard({
   onSignOut,
 }: Props) {
   const [activePage, setActivePage] = useState<Page>('Overview');
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [signingOut, setSigningOut] = useState(false);
+const [sidebarOpen, setSidebarOpen] = useState(false);
+const [signingOut, setSigningOut] = useState(false);
+
+const [wallet, setWallet] = useState<{
+available_kobo: number;
+pending_kobo: number;
+} | null>(null);
+
+const [walletLoading, setWalletLoading] = useState(true);
+const [walletError, setWalletError] = useState('');
 
   const [tasks, setTasks] = useState<Task[]>([]);
   const [tasksLoading, setTasksLoading] = useState(false);
@@ -146,7 +154,55 @@ export default function WorkerDashboard({
     setNotice('');
     setActionError('');
   }
+useEffect(() => {
+let cancelled = false;
 
+async function loadWallet() {
+  if (!supabase) {
+    setWalletError('Wallet connection is not configured.');
+    setWalletLoading(false);
+    return;
+  }
+
+  setWalletLoading(true);
+  setWalletError('');
+
+  const { data, error } = await supabase
+    .from('wallets')
+    .select('available_kobo, pending_kobo')
+    .eq('worker_id', user.id)
+    .maybeSingle();
+
+  if (cancelled) return;
+
+  if (error) {
+    console.error('Wallet loading failed:', error);
+    setWallet(null);
+    setWalletError(
+      'Could not load your wallet. Please refresh and try again.'
+    );
+  } else if (!data) {
+    setWallet(null);
+    setWalletError(
+      'Your wallet record was not found. Please contact EarnBridge support.'
+    );
+  } else {
+    setWallet({
+      available_kobo: Number(data.available_kobo ?? 0),
+      pending_kobo: Number(data.pending_kobo ?? 0),
+    });
+  }
+
+  setWalletLoading(false);
+}
+
+void loadWallet();
+
+return () => {
+  cancelled = true;
+};
+
+}, [user.id]);
   useEffect(() => {
     if (activePage !== 'Find Tasks') return;
 
