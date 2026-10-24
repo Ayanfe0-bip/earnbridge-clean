@@ -31,13 +31,13 @@ type Props = {
 };
 
 type Page =
-  | 'Overview'
-  |'CPX points'
-  | 'Find Tasks'
-  | 'My Tasks'
-  | 'Earnings'
-  | 'Profile'
-  | 'Help & Support';
+| 'Overview'
+| 'CPX Points'
+| 'Find Tasks'
+| 'My Tasks'
+| 'Earnings'
+| 'Profile'
+| 'Help & Support';
 
 type Task = {
   id: string;
