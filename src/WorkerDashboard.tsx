@@ -520,8 +520,13 @@ return () => {
             <Coins className="eb-art-coins" size={30} />
           </div>
         </section>
-
-                <section className="eb-stats-grid">
+        
+        {walletError && (
+<section className="eb-notice" role="alert">
+<CircleHelp size={22} />
+<div>{walletError}</div>
+</section>
+)}                <section className="eb-stats-grid">
           <article className="eb-stat-card">
             <span className="eb-stat-icon eb-icon-blue">
               <Wallet size={21} />
