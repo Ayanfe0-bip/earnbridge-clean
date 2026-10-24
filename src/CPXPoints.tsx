@@ -9,7 +9,7 @@ RefreshCw,
 ShieldCheck,
 Wallet,
 } from 'lucide-react';
-import { supabase } from './lib/supabase';
+import { supabase, supabaseConfigured } from './lib/supabase';
 
 type PointsAccount = {
 user_id: string;
@@ -81,6 +81,17 @@ setLoading(true);
 
 setError('');
 setNotice('');
+
+if (!supabaseConfigured || !supabase) {
+  setBalance(0);
+  setTransactions([]);
+  setError(
+    'Supabase is not configured. Please check your Vercel environment variables.'
+  );
+  setLoading(false);
+  setRefreshing(false);
+  return;
+}
 
 try {
   const {
