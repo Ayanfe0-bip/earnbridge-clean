@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
+import CPXPoints from './CPXPoints';
 import {
   Activity,
   ArrowDownToLine,
@@ -31,6 +32,7 @@ type Props = {
 
 type Page =
   | 'Overview'
+  |'CPX points'
   | 'Find Tasks'
   | 'My Tasks'
   | 'Earnings'
@@ -65,6 +67,7 @@ type Submission = {
 
 const navigation: { name: Page; icon: typeof House }[] = [
   { name: 'Overview', icon: House },
+  { name: 'CPX Points', icon: Coins },
   { name: 'Find Tasks', icon: Search },
   { name: 'My Tasks', icon: BriefcaseBusiness },
   { name: 'Earnings', icon: Wallet },
