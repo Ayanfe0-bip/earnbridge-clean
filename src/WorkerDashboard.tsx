@@ -1294,10 +1294,11 @@ return () => {
 
       case 'Earnings':
         return renderEarnings();
-
+      case 'CPX Points':
+  return <CPXPoints />;
       case 'Profile':
         return renderProfile();
-
+       
       case 'Help & Support':
         return renderHelp();
 
