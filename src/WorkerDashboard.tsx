@@ -525,7 +525,7 @@ return () => {
   <span className="eb-stat-icon eb-icon-blue">
     <Wallet size={21} />
   </span>
-  <p>Available balance</p>
+  <p>Available balance</p>1
   <h3>
     {walletLoading
       ? 'Loading...'
@@ -1108,8 +1108,13 @@ return () => {
             <span className="eb-stat-icon eb-icon-blue">
               <Wallet size={21} />
             </span>
-            <p>Available balance</p>
-            <h3>{money(0)}</h3>
+            <h3>
+  {walletLoading
+    ? 'Loading...'
+    : wallet
+      ? money(wallet.available_kobo / 100)
+      : '—'}
+</h3>
           </article>
 
           <article className="eb-stat-card">
@@ -1124,7 +1129,7 @@ return () => {
             <span className="eb-stat-icon eb-icon-green">
               <ArrowDownToLine size={21} />
             </span>
-            <p>Total withdrawn</p>
+            <h3>Not active</h3>
             <h3>{money(0)}</h3>
           </article>
         </section>
