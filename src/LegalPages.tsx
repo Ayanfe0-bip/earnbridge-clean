@@ -482,7 +482,7 @@ you agree to these terms.
 }
 
 export default function LegalPages() {
-const path = window.location.pathname.replace(//$/, '') || '/';
+const path = window.location.pathname.replace(/\/$/, '') || '/';
 
 const isPrivacy = path === '/privacy-policy';
 const isTerms = path === '/terms';
