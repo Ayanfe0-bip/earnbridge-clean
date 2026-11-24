@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 import Auth from './Auth';
 import WorkerDashboard from './WorkerDashboard';
+import LegalPages from './LegalPages';
 import { supabase } from './lib/supabase';
 import {
   ArrowRight,
@@ -127,7 +128,11 @@ function App() {
       />
     );
   }
+  const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
 
+  if (currentPath === '/privacy-policy' || currentPath === '/terms') {
+    return <LegalPages />;
+        }
   return (
     <div className="page-shell">
       <header className="site-header">
@@ -145,7 +150,9 @@ function App() {
             <a href="#home" className="nav-active">Home</a>
             <a href="#features">Features</a>
             <a href="#how-it-works">How It Works</a>
-            <a href="#about">About</a>
+                        <a href="#about">About</a>
+            <a href="/privacy-policy">Privacy Policy</a>
+            <a href="/terms">Terms & Conditions</a>
           </nav>
 
           <div className="header-right">
