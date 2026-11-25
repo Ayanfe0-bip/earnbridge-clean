@@ -380,7 +380,17 @@ export default function OgaPayJobs() {
             )}
 
             <a
-              href={job.targetUrl || 'https://ogapay.app'}
+              href={
+  job.targetUrl &&
+  (() => {
+    try {
+      const url = new URL(job.targetUrl);
+      return url.protocol === 'https:' ? url.href : 'https://ogapay.app';
+    } catch {
+      return 'https://ogapay.app';
+    }
+  })()
+              }
               target="_blank"
               rel="noopener noreferrer"
               className="eb-primary-button"
