@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 import CPXPoints from './CPXPoints';
+import OgaPayJobs from './OgaPayJobs';
 import {
   Activity,
   ArrowDownToLine,
