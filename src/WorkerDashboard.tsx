@@ -72,6 +72,7 @@ const navigation: { name: Page; icon: typeof House }[] = [
   { name: 'CPX Points', icon: Coins },
   { name: 'Find Tasks', icon: Search },
   { name: 'My Tasks', icon: BriefcaseBusiness },
+  { name: 'OgaPay Jobs', icon: BriefcaseBusiness },
   { name: 'Earnings', icon: Wallet },
   { name: 'Profile', icon: UserRound },
   { name: 'Help & Support', icon: CircleHelp },
