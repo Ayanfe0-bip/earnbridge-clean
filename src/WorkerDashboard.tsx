@@ -1288,7 +1288,8 @@ return () => {
     switch (activePage) {
       case 'Overview':
         return renderOverview();
-
+case 'OgaPay Jobs':
+  return <OgaPayJobs />;
       case 'Find Tasks':
         return renderFindTasks();
 
