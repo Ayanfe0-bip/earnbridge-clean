@@ -32,13 +32,14 @@ type Props = {
 };
 
 type Page =
-| 'Overview'
-| 'CPX Points'
-| 'Find Tasks'
-| 'My Tasks'
-| 'Earnings'
-| 'Profile'
-| 'Help & Support';
+  | 'Overview'
+  | 'CPX Points'
+  | 'Find Tasks'
+  | 'My Tasks'
+  | 'Earnings'
+  | 'Profile'
+  | 'OgaPay Jobs'
+  | 'Help & Support';
 
 type Task = {
   id: string;
