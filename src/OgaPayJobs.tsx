@@ -38,48 +38,82 @@ type ApiResponse = {
 };
 
 const blockedTerms = [
-  'gambling',
-  'bet9ja',
-  'betting',
-  'casino',
-  'aviator',
-  'sportsbook',
-  'wager',
-  'stake.com',
-  'gmail',
-  'email account',
-  'create email',
-  'create account',
-  'account creation',
-  'sell account',
-  'sell gmail',
-  'account farming',
-  'fake account',
-  'verification code',
-  'otp',
-  'pay registration fee',
-  'registration fee',
-  'deposit to unlock',
-  'investment deposit',
-  'send money',
-  'bank details',
-  'credit card details',
-  'password',
+// Gambling and betting
+'gambling',
+'bet9ja',
+'betting',
+'casino',
+'aviator',
+'sportsbook',
+'wager',
+'stake.com',
+
+// Email and account creation
+'gmail',
+'email account',
+'create email',
+'create account',
+'create an account',
+'account creation',
+'sell account',
+'sell gmail',
+'account farming',
+'fake account',
+'new users only',
+'sign up',
+'signup',
+'register on',
+'registration',
+'referral',
+'ref code',
+'referral code',
+'invite code',
+
+// App-install and gaming campaigns
+'download the app',
+'install the app',
+'play the game',
+'play games',
+'telegram bot',
+'tier 3',
+'get to tier',
+'complete kyc',
+
+// Verification and sensitive information
+'verification code',
+'verify your account',
+'otp',
+'password',
+'bank details',
+'credit card details',
+'seed phrase',
+'private key',
+'connect your wallet',
+
+// Payments and suspicious financial requests
+'pay registration fee',
+'registration fee',
+'activation fee',
+'withdrawal fee',
+'deposit to unlock',
+'investment deposit',
+'send money',
+'deposit',
 ];
 
 function isSafeJob(job: OgaPayJob) {
-  const text = [
-    job.title,
-    job.description,
-    job.instructions || '',
-    job.proofRequired || '',
-  ]
-    .join(' ')
-    .toLowerCase();
+const text = [
+job.title,
+job.description,
+job.instructions || '',
+job.proofRequired || '',
+job.targetUrl || '',
+]
+.join(' ')
+.toLowerCase();
 
-  return !blockedTerms.some((term) => text.includes(term));
+return !blockedTerms.some((term) => text.includes(term));
 }
-
 function formatMoney(amount: number, currency: string) {
   if (currency === 'NGN') {
     return new Intl.NumberFormat('en-NG', {
